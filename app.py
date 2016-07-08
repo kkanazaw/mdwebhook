@@ -91,17 +91,14 @@ def process_user(uid):
                 continue
 
             card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
-            if(card != False):
-                card.comment("update!")
-            #revs = dbx.files_list_revisions(entry.path_lower)
-            #if(len(revs.entries) >= 2):
-            #    for rev in revs.entries:
-            #        pprint(rev.rev)
-            # Convert to Markdown and store as <basename>.html
-            # _, resp = dbx.files_download(entry.path_lower)
-            # html = markdown(resp.content)
-            # dbx.files_upload(html, entry.path_lower[:-3] + '.html', mode=WriteMode('overwrite'))
-                                                                                        
+            if(card == False):
+                continue
+            card.comment("update!")
+
+            revs = dbx.files_list_revisions(entry.path_lower)
+            if(card.list_id == "577db30f129e87073996cc1a" && len(revs.entries) >= 2):
+                trello_client.change_list("577db3127b9a95030e956ab8")
+
         # Update cursor
         cursor = result.cursor
         redis_client.hset('cursors', uid, cursor)
