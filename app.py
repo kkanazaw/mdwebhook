@@ -5,7 +5,7 @@ import os
 import threading
 import urlparse
 
-from dropbox import Dropbox
+from dropbox import Dropbox,DropboxOAuth2Flow
 from dropbox.files import DeletedMetadata,FolderMetadata
 from flask import abort, Flask, redirect, render_template, request, session, url_for
 from markdown import markdown
@@ -61,14 +61,14 @@ def oauth_callback():
 
     return redirect(url_for('done'))
 
-def process_user(account):
+def process_user(uid):
     '''Call /delta for the given user ID and process any changes.'''
 
     # OAuth token for the user
-    token = redis_client.hget('tokens', account)
+    token = redis_client.hget('tokens', uid)
 
     # /delta cursor for the user (None the first time)
-    cursor = redis_client.hget('cursors', account)
+    cursor = redis_client.hget('cursors', uid)
 
     dbx = Dropbox(token)
     has_more = True
@@ -92,7 +92,7 @@ def process_user(account):
                                                                                         
         # Update cursor
         cursor = result.cursor
-        redis_client.hset('cursors', acount, cursor)
+        redis_client.hset('cursors', uid, cursor)
 
         # Repeat only if there's more to do
         has_more = result.has_more
@@ -129,12 +129,12 @@ def webhook():
     # Make sure this is a valid request from Dropbox
     if not validate_request(): abort(403)
 
-    for account in json.loads(request.data)['list_folder']['accounts']:
+    for uid in json.loads(request.data)['delta']['users']:
         # We need to respond quickly to the webhook request, so we do the
         # actual work in a separate thread. For more robustness, it's a
         # good idea to add the work to a reliable queue and process the queue
         # in a worker process.
-        threading.Thread(target=process_user, args=(account,)).start()
+        threading.Thread(target=process_user, args=(uid,)).start()
     return ''
 
 if __name__=='__main__':
