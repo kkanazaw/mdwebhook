@@ -113,8 +113,6 @@ def get_card_by_name(client, name):
     board = client.get_board("577db3096f2fe5b4e4692ea2")    
     cards = board.open_cards()
     for card in cards:
-        pprint(card.name)
-        pprint(name)        
         if(card.name == name):
             return card
     return False
