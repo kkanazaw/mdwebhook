@@ -17,7 +17,10 @@ redis_client = redis.from_url(redis_url)
 # App key and secret from the App console (dropbox.com/developers/apps)
 APP_KEY = os.environ['APP_KEY']
 APP_SECRET = os.environ['APP_SECRET']
- 
+
+TRELLO_API_KEY = os.environ['TRELLO_API_KEY']
+TRELLO_API_TOKEN = os.environ['TRELLO_API_TOKEN']
+
 app = Flask(__name__)
 app.debug = True
  
@@ -81,14 +84,16 @@ def process_user(uid):
 
         for entry in result.entries:
             # Ignore deleted files, folders, and non-markdown files
-            if (isinstance(entry, DeletedMetadata) or
-                isinstance(entry, FolderMetadata) or
-                not entry.path_lower.endswith('.md')):
+            if (isinstance(entry, DeletedMetadata) or isinstance(entry, FolderMetadata)):
                 continue
+            trello_post(entry.name)
+            revs = client.files_list_revisions(entry.path_lower)
+            for rev in revs.entries:
+                pprint(rev.rev)
             # Convert to Markdown and store as <basename>.html
-            _, resp = dbx.files_download(entry.path_lower)
-            html = markdown(resp.content)
-            dbx.files_upload(html, entry.path_lower[:-3] + '.html', mode=WriteMode('overwrite'))
+            # _, resp = dbx.files_download(entry.path_lower)
+            # html = markdown(resp.content)
+            # dbx.files_upload(html, entry.path_lower[:-3] + '.html', mode=WriteMode('overwrite'))
                                                                                         
         # Update cursor
         cursor = result.cursor
@@ -96,6 +101,12 @@ def process_user(uid):
 
         # Repeat only if there's more to do
         has_more = result.has_more
+
+def trello_post(title):
+    client = TrelloClient(TRELLO_API_KEY, token=TRELLO_TOKEN)
+    board = client.get_board("577db3096f2fe5b4e4692ea2")
+    target_list = board.get_list("577db30f129e87073996cc1a")
+    created_card = target_list.add_card(title))
 
 @app.route('/')
 def index():
