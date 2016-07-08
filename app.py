@@ -104,7 +104,7 @@ def process_user(uid):
         has_more = result.has_more
 
 def trello_post(title):
-    client = TrelloClient(TRELLO_API_KEY, token=TRELLO_TOKEN)
+    client = trello.TrelloClient(TRELLO_API_KEY, token=TRELLO_TOKEN)
     board = client.get_board("577db3096f2fe5b4e4692ea2")
     target_list = board.get_list("577db30f129e87073996cc1a")
     created_card = target_list.add_card(title)
