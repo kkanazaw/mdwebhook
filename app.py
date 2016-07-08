@@ -76,6 +76,7 @@ def process_user(uid):
 
     dbx = Dropbox(token)
     has_more = True
+    trello = trello.TrelloClient(TRELLO_API_KEY, token=TRELLO_API_TOKEN)
 
     while has_more:
         if cursor is None:
@@ -87,10 +88,13 @@ def process_user(uid):
             # Ignore deleted files, folders, and non-markdown files
             if (isinstance(entry, DeletedMetadata) or isinstance(entry, FolderMetadata)):
                 continue
-            trello_post(entry.name)
-            revs = dbx.files_list_revisions(entry.path_lower)
-            for rev in revs.entries:
-                pprint(rev.rev)
+
+            card = get_card_by_name(client, entry.name)
+            card.comment("update!")
+            #revs = dbx.files_list_revisions(entry.path_lower)
+            #if(len(revs.entries) >= 2):
+            #    for rev in revs.entries:
+            #        pprint(rev.rev)
             # Convert to Markdown and store as <basename>.html
             # _, resp = dbx.files_download(entry.path_lower)
             # html = markdown(resp.content)
@@ -103,8 +107,15 @@ def process_user(uid):
         # Repeat only if there's more to do
         has_more = result.has_more
 
-def trello_post(title):
-    client = trello.TrelloClient(TRELLO_API_KEY, token=TRELLO_API_TOKEN)
+def get_card_by_name(client, name):
+    board = client.get_board("577db3096f2fe5b4e4692ea2")    
+    cards = board.open_cards()
+    for card in cards:
+        if(card.name == name):
+            return card
+    return False
+
+def trello_post(client, title):
     board = client.get_board("577db3096f2fe5b4e4692ea2")
     target_list = board.get_list("577db30f129e87073996cc1a")
     created_card = target_list.add_card(title)
