@@ -76,7 +76,7 @@ def process_user(uid):
 
     dbx = Dropbox(token)
     has_more = True
-    trello = trello.TrelloClient(TRELLO_API_KEY, token=TRELLO_API_TOKEN)
+    trello_client = trello.TrelloClient(TRELLO_API_KEY, token=TRELLO_API_TOKEN)
 
     while has_more:
         if cursor is None:
@@ -89,7 +89,7 @@ def process_user(uid):
             if (isinstance(entry, DeletedMetadata) or isinstance(entry, FolderMetadata)):
                 continue
 
-            card = get_card_by_name(client, entry.name)
+            card = get_card_by_name(trello_client, entry.name)
             card.comment("update!")
             #revs = dbx.files_list_revisions(entry.path_lower)
             #if(len(revs.entries) >= 2):
