@@ -91,7 +91,8 @@ def process_user(uid):
                 continue
 
             card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
-            card.comment("update!")
+            if(card != False):
+                card.comment("update!")
             #revs = dbx.files_list_revisions(entry.path_lower)
             #if(len(revs.entries) >= 2):
             #    for rev in revs.entries:
