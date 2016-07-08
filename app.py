@@ -96,7 +96,7 @@ def process_user(uid):
             card.comment("update!")
 
             revs = dbx.files_list_revisions(entry.path_lower)
-            if(card.list_id == "577db30f129e87073996cc1a" && len(revs.entries) >= 2):
+            if(card.list_id == "577db30f129e87073996cc1a" and len(revs.entries) >= 2):
                 trello_client.change_list("577db3127b9a95030e956ab8")
 
         # Update cursor
