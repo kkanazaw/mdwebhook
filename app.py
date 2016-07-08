@@ -5,7 +5,7 @@ import os
 import threading
 import urlparse
 
-import dropbox
+from dropbox import dropbox
 from flask import abort, Flask, redirect, render_template, request, session, url_for
 from markdown import markdown
 import redis
