@@ -110,10 +110,11 @@ def process_user(uid):
 def get_card_by_name(client, name):
     board = client.get_board("577db3096f2fe5b4e4692ea2")    
     cards = board.open_cards()
-    for card in cards:
-        if(card.name == name):
-            return card
-    return False
+    return cards[-1]
+    # for card in cards:
+    #     if(card.name == name):
+    #         return card
+    # return False
 
 def trello_post(client, title):
     board = client.get_board("577db3096f2fe5b4e4692ea2")
