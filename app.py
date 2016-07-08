@@ -89,7 +89,7 @@ def process_user(uid):
             if (isinstance(entry, DeletedMetadata) or isinstance(entry, FolderMetadata)):
                 continue
 
-            card = get_card_by_name(trello_client, entry.name)
+            card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
             card.comment("update!")
             #revs = dbx.files_list_revisions(entry.path_lower)
             #if(len(revs.entries) >= 2):
