@@ -10,7 +10,8 @@ from dropbox.files import DeletedMetadata,FolderMetadata,WriteMode
 from flask import abort, Flask, redirect, render_template, request, session, url_for
 from markdown import markdown
 import redis
- 
+import trello
+
 redis_url = os.environ['REDISTOGO_URL']
 redis_client = redis.from_url(redis_url)
  
