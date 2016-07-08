@@ -93,6 +93,7 @@ def process_user(uid):
             card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
             if(card == False):
                 continue
+            card.set_pos("top")
             card.comment("update!")
 
             revs = dbx.files_list_revisions(entry.path_lower)
