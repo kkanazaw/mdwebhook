@@ -5,7 +5,8 @@ import os
 import threading
 import urlparse
 
-from dropbox import dropbox
+from dropbox import Dropbox
+from dropbox.files import DeletedMetadata,FolderMetadata
 from flask import abort, Flask, redirect, render_template, request, session, url_for
 from markdown import markdown
 import redis
