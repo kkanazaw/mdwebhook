@@ -11,6 +11,7 @@ from flask import abort, Flask, redirect, render_template, request, session, url
 from markdown import markdown
 import redis
 import trello
+import pprint
 
 redis_url = os.environ['REDISTOGO_URL']
 redis_client = redis.from_url(redis_url)
@@ -110,11 +111,12 @@ def process_user(uid):
 def get_card_by_name(client, name):
     board = client.get_board("577db3096f2fe5b4e4692ea2")    
     cards = board.open_cards()
-    return cards[-1]
-    # for card in cards:
-    #     if(card.name == name):
-    #         return card
-    # return False
+    for card in cards:
+        pprint(card.name)
+        pprint(name)        
+        if(card.name == name):
+            return card
+    return False
 
 def trello_post(client, title):
     board = client.get_board("577db3096f2fe5b4e4692ea2")
