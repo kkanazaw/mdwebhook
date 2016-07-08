@@ -88,7 +88,7 @@ def process_user(uid):
             if (isinstance(entry, DeletedMetadata) or isinstance(entry, FolderMetadata)):
                 continue
             trello_post(entry.name)
-            revs = client.files_list_revisions(entry.path_lower)
+            revs = dbx.files_list_revisions(entry.path_lower)
             for rev in revs.entries:
                 pprint(rev.rev)
             # Convert to Markdown and store as <basename>.html
