@@ -98,7 +98,7 @@ def process_user(uid):
                 continue
 
             card.set_pos("top")
-            card.comment("updateしました。 リビジョン:%s" % entry.rev)
+            card.comment("update! revision: %s" % entry.rev)
 
             revs = dbx.files_list_revisions(entry.path_lower)
             if(card.list_id == "577db30f129e87073996cc1a" and len(revs.entries) >= 2):
