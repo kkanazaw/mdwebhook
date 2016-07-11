@@ -81,7 +81,7 @@ def process_user(uid):
 
     while has_more:
         if cursor is None:
-            result = dbx.files_list_folder(path='')
+            result = dbx.files_list_folder(path='/remote_workspace')
         else:
             result = dbx.files_list_folder_continue(cursor)
 
@@ -91,14 +91,20 @@ def process_user(uid):
                 continue
 
             card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
+            
             if(card == False):
+                if(len(revs.entries) == 1):
+                    trello_post(client, entry.name.encode('utf-8'))
                 continue
+
             card.set_pos("top")
-            card.comment("update!")
+            card.comment(entry.rev)
 
             revs = dbx.files_list_revisions(entry.path_lower)
             if(card.list_id == "577db30f129e87073996cc1a" and len(revs.entries) >= 2):
                 card.change_list("577db3127b9a95030e956ab8")
+
+
 
         # Update cursor
         cursor = result.cursor
