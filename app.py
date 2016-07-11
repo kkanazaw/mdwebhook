@@ -94,7 +94,7 @@ def process_user(uid):
             card = get_card_by_name(trello_client, entry.name.encode('utf-8'))
             
             if(card == False):
-                # trello_post(client, entry.name.encode('utf-8'))
+                trello_post(dbx, entry.name.encode('utf-8'))
                 continue
 
             card.set_pos("top")
