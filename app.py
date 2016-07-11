@@ -125,6 +125,7 @@ def trello_post(client, title):
     board = client.get_board("577db3096f2fe5b4e4692ea2")
     target_list = board.get_list("577db30f129e87073996cc1a")
     created_card = target_list.add_card(title)
+    created_card.set_pos("top")
 
 @app.route('/')
 def index():
